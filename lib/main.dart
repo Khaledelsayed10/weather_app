@@ -9,29 +9,40 @@ void main() {
   runApp(const WeatherApp());
 }
 
-class WeatherApp extends StatelessWidget {
+class WeatherApp extends StatefulWidget {
   const WeatherApp({super.key});
+
+  @override
+  _WeatherAppState createState() => _WeatherAppState();
+}
+
+class _WeatherAppState extends State<WeatherApp> {
+  MaterialColor currentColor = Colors.blue;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => GetWeatherCubit(),
-        child: Builder(
-          builder: (context) => BlocBuilder<GetWeatherCubit, WeatherStates>(
-            builder: (context, state) {
-              return MaterialApp(
-                theme: ThemeData(
-                  primarySwatch: getThemeColor(
-                    BlocProvider.of<GetWeatherCubit>(context)
-                        .weatherModel
-                        ?.weatherCondition,
-                  ),
-                ),
-                debugShowCheckedModeBanner: false,
-                home: const HomeViews(),
-              );
-            },
+      create: (context) => GetWeatherCubit(),
+      child: BlocListener<GetWeatherCubit, WeatherStates>(
+        listener: (context, state) {
+          if (state is WeatherSuccess) {
+            setState(() {
+              currentColor = getThemeColor(state.weatherModel.weatherCondition);
+            });
+          }
+        },
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Weather App',
+          theme: ThemeData(
+            primarySwatch: currentColor,
+            appBarTheme: AppBarTheme(
+              color: currentColor,
+            ),
           ),
-        ));
+          home: const HomeViews(),
+        ),
+      ),
+    );
   }
 }
