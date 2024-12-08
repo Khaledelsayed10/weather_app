@@ -28,20 +28,10 @@ class WeatherApp extends StatelessWidget {
                   ),
                 ),
                 debugShowCheckedModeBanner: false,
-                home:  HomeViews(),
+                home: const HomeViews(),
               );
             },
           ),
         ));
   }
-  
 }
-
-
-
-
-
-
-
-
-
